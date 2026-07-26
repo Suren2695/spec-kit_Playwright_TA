@@ -43,6 +43,31 @@ The framework is designed to run locally and headless in CI without code changes
 - `.specify/`
   - Spec Kit metadata and templates used for feature planning.
 
+- `.github/agents/` and `.github/prompts/`
+  - Local integration hooks for Spec Kit commands such as `speckit.specify`, `speckit.plan`, `speckit.tasks`, and `speckit.implement`.
+
+## Spec Kit (speckit)
+
+This repository uses GitHub Spec Kit (also called `speckit`) for structured feature planning and implementation.
+
+- `speckit` is a workflow tool for generating and managing feature documents like `spec.md`, `plan.md`, `tasks.md`, and implementation artifacts.
+- It is configured in this repo under `.specify/`.
+- The repo specifically records `speckit_version: 0.13.0` in `.specify/init-options.json`.
+- The `.specify/workflows/speckit/workflow.yml` file defines the Spec Kit lifecycle for `specify`, `plan`, `tasks`, and `implement`.
+
+Using Spec Kit is useful because it:
+
+- enforces a consistent project structure for feature design, planning, and execution
+- makes it easier to keep requirements, implementation plans, and tasks aligned
+- provides repeatable commands and templates for new features
+- helps teams separate discovery, design, and implementation work with clear artifacts
+
+While this repository does not include the external Spec Kit installer, it references the local `.specify/` metadata and workflow files created when Spec Kit was initialized.
+
+For the official Spec Kit source and documentation, see:
+
+- https://github.com/github/speckit
+
 ## Setup
 
 1. Install dependencies:
