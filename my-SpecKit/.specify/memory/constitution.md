@@ -1,50 +1,41 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Playwright + TypeScript Test Framework Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Page Object Model First
+Every web view, page, and reusable UI flow is represented by a dedicated class in `/pages`. Page objects own selectors, actions, and assertions. Test files must not contain raw selectors or duplicate locator logic.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Independent Feature Tests
+UI tests live under `/tests/ui` and API tests under `/tests/api`. Each feature gets one spec file (for example `login.spec.ts`, `cart.spec.ts`). Tests must run independently and cannot rely on order or state left by other tests.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Behavior-Driven Naming and Tagging
+`describe` blocks must name the feature and test titles must express user-observable behavior, e.g. `should reject login with invalid password`. Tests must include tag markers such as `@smoke` and `@regression` in titles so subsets can be executed via `--grep`.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Environment-Driven Configuration and Fixture Data
+Base URLs, credentials, and environment-dependent values must come from `.env` variables, not hardcoded values. Test data belongs in JSON fixtures under `/fixtures`; inline data in test files is prohibited. Assertions must include clear, descriptive failure messages.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. CI Headless Execution and Report Generation
+The framework must execute headless in CI and produce an HTML report after every run. API tests must remain isolated from UI tests, and API validation must never reuse browser context from UI execution.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Additional Constraints
+- `/pages` is the only authorized location for page classes and locator definitions.
+- `/tests/ui` and `/tests/api` must be configured as separate test roots or projects in `playwright.config.ts` to prevent shared browser state.
+- `.env` files or environment variables are the single source for URLs and credentials. Secrets must never be stored in repository code.
+- Fixtures live under `/fixtures` and are consumed by test files via explicit loading.
+- HTML report artifacts must be generated consistently in CI and attached to pipeline runs when available.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow
+- All new tests and page objects are reviewed for architecture, maintainability, and selector reuse.
+- Every test file must be independently runnable with `npx playwright test <file>`, and CI must be able to run feature subsets with grep tags.
+- PRs must verify that UI and API tests remain separated, no new raw selectors are introduced in tests, and `.env` usage is preserved.
+- Failures must be actionable: assertions should explain the expected result and what went wrong.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This constitution defines the mandatory framework practices for the Playwright + TypeScript test automation project. It supersedes informal or legacy conventions for test structure, naming, data handling, environment configuration, and CI reporting.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- All test framework changes must be proposed by updating this constitution and validating the new behavior in CI.
+- Every PR that modifies test structure or Playwright configuration must include evidence that new tests run headless and that an HTML report is produced.
+- Compliance is verified by reviewers and automated checks; non-compliant test changes must be remediated before merge.
+- Amendments require a documented rationale, a corresponding version bump, and a review note in the PR description.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-07-26 | **Last Amended**: 2026-07-26
