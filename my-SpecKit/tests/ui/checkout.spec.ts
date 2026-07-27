@@ -31,6 +31,6 @@ test.describe('SauceDemo Checkout Flow', () => {
     await checkoutPage.continue();
     await checkoutPage.finish();
 
-    await expect(checkoutPage.getOrderConfirmation()).resolves.toContain('THANK YOU FOR YOUR ORDER');
+    await expect(checkoutPage.getOrderConfirmation()).resolves.toContain('Thank you for your order!');
   });
 });
